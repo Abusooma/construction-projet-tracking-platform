@@ -1,0 +1,96 @@
+{% extends 'main.html' %}
+{% load static%}
+
+{% block main %}
+<div class="page-header">
+    <div class="page-title">
+        <h4>Profile</h4>
+        <h6>User Profile</h6>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="profile-set">
+            <div class="profile-head">
+            </div>
+            <div class="profile-top">
+                <form method="POST" class="profile-top w-100" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="profile-content">
+                        <div class="profile-contentimg">
+                            {% if request.user.photo %}
+                            <img src="{{ request.user.photo.url }}" alt="img" id="blah">
+                            {% else %}
+                            <img src="{% static 'assets/img/avatar.svg' %}" alt="img">
+                            {% endif %}
+                            <div class="profileupload">
+                                <input type="file" name="photo" id="imgInp">
+                                <a href="javascript:void(0);"><img src="{% static 'assets/img/icons/edit-set.svg' %}"
+                                                                   alt="img"></a>
+                            </div>
+                        </div>
+                        <div class="profile-contentname">
+                            <h2>{{ request.user }}</h2>
+                            <h4>
+                                Mettez à jour votre photo et vos informations personnelles.</h4>
+                        </div>
+                    </div>
+                    <div class="ms-auto">
+                        <button type="submit" class="btn btn-submit me-2">Save</button>
+                        <a href="{% url 'home' %}" class="btn btn-cancel">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <form id="profile-form" method="post">
+            {% csrf_token %}
+            <div class="row">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %} fade show"
+                     role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                        <label for="id_prenom">Prenom</label>
+                        {{ form.prenom }}
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                        <label for="id_nom">Nom</label>
+                        {{ form.nom }}
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                        <label for="id_email">Email</label>
+                        {{ form.email }}
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                        <label for="id_phone_number">Telephone</label>
+                        {{ form.phone_number }}
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                        <label for="id_address">Adresse</label>
+                        {{ form.address }}
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button type="submit" form="profile-form" class="btn btn-submit me-2">Submit</button>
+                    <a href="{% url 'home' %}" class="btn btn-cancel">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

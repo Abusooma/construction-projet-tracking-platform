@@ -1,0 +1,60 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block main %}
+<!-- Dans votre template HTML -->
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}"
+     role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="container-fluid">
+    <div id="ui-view" style="opacity: 1;">
+        <div class="animated fadeIn">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="fa fa-align-justify"></i> Informations principales
+                            <div class="card-actions">
+                                <a href="" target="_blank">
+                                    <small class="text-muted">Documentation</small>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="jumbotron bg-white">
+                                <h1 class="display-4">Bienvenue!</h1>
+                                <p class="lead">Bienvenue sur notre plateforme de gestion de projets de construction de
+                                    maison.</p>
+                                <hr class="my-4">
+                                {% if user.is_authenticated %}
+                                <p class="lead">Vous pouvez maintenant explorer vos projets, suivre leur progression et
+                                    gérer les différentes tâches associées. Utilisez les outils disponibles pour une
+                                    gestion optimisée et efficace.</p>
+                                <p>Commencez à explorer les différentes sections du tableau de bord pour voir tous les
+                                    détails et mises à jour sur vos projets.</p>
+                                {% else %}
+                                <p>Simple, rapide et efficace. Inscrivez-vous pour commencer à gérer vos projets de
+                                    construction ou connectez-vous pour accéder à votre tableau de bord.</p>
+                                <p class="lead">
+                                    <a class="btn btn-warning btn-lg" href="#" role="button">Contactez-nous</a>
+                                </p>
+                                <p>
+                                    <a href="{% url 'login' %}">Cliquez ici si vous êtes déjà enregistré</a>
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

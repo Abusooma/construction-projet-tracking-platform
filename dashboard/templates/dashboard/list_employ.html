@@ -1,0 +1,95 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block main%}
+<div class="page-header">
+    <div class="page-title">
+        <h4>Listes des employés</h4>
+    </div>
+    <div class="page-btn">
+        <a href="{% url 'add-client' %}" class="btn btn-added"
+        ><img
+                src="{% static 'assets/img/icons/plus.svg' %}"
+                alt="img"
+                class="me-2"
+        />Ajouter un Employé</a
+        >
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}"
+             role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="table-top">
+            <div class="search-set">
+                <div class="search-path">
+                    <a class="btn btn-filter" id="filter_search">
+                        <img src="{% static 'assets/img/icons/filter.svg' %}" alt="img"/>
+                        <span
+                        ><img src="{% static 'assets/img/icons/closes.svg' %}" alt="img"
+                        /></span>
+                    </a>
+                </div>
+                <div class="search-input">
+                    <a class="btn btn-searchset">
+                        <img src="{% static 'assets/img/icons/search-white.svg' %}" alt="img"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="table-responsive">
+            <table class="table datanew">
+                <thead>
+                <tr>
+                    <!--<th>Profile</th>-->
+                    <th>Nom</th>
+                    <th>Prenom</th>
+                    <th>Telephone</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for employ in employes %}
+                <tr>
+                    <!--<td class="productimgname">
+                        <a href="javascript:void(0);" class="product-img">
+                            <img
+                                    src="{% static 'assets/img/customer/customer1.jpg' %}"
+                                    alt="product"
+                            />
+                        </a>
+                    </td>-->
+                    <td>{{ employ.nom }}</td>
+                    <td>{{ employ.prenom }}</td>
+                    <td>{{ employ.phone_number }}</td>
+                    <td>
+                        {{ employ.get_domaine }}
+                    </td>
+
+                    <td>
+                        <a class="me-3" href="{% url 'update-employ' employ.id %}">
+                            <img src="{% static 'assets/img/icons/edit.svg' %}" alt="img"/>
+                        </a>
+                        <a class="me-3 confirm-text" href="{% url 'delete-employ' employ.id %}">
+                            <img src="{% static 'assets/img/icons/delete.svg' %}" alt="img"/>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

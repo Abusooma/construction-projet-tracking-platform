@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue sur notre plateforme de construction de maison</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #0056b3;
+        }
+        p {
+            margin: 15px 0;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        ul li {
+            margin: 10px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            background-color: #0056b3;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Bienvenue sur notre plateforme de construction de maison</h1>
+    <p>Bonjour {{ user.username }},</p>
+    <p>Nous sommes ravis de vous accueillir en tant que client sur notre plateforme de gestion de projets de
+        construction de maison. Grâce à notre outil, vous pourrez suivre en temps réel l'avancement de votre projet de
+        construction.</p>
+    <p>Voici vos informations de connexion :</p>
+    <ul>
+        <li><strong>Nom d'utilisateur :</strong> {{ user.email }}</li>
+        <li><strong>Mot de passe :</strong> {{ password }}</li>
+    </ul>
+    <p>Pour vous connecter à votre tableau de bord et suivre la progression de votre projet, cliquez sur le bouton
+        ci-dessous :</p>
+    <p><a href="{{ login_url }}" class="btn">Accéder à mon tableau de bord</a></p>
+    <p>Nous restons à votre disposition pour toute question ou assistance.</p>
+    <p>Cordialement,</p>
+    <p>L'équipe de gestion de projets de construction</p>
+</div>
+</body>
+</html>

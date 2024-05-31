@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="POS - Bootstrap Admin Template">
+    <meta name="keywords"
+          content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern,  html5, responsive">
+    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Dreams Pos admin template</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.jpg' %}">
+
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/all.min.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <style>
+        .project-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .small-width {
+            width: 95%;
+        }
+
+        .slider-project img {
+             width: 100%;
+            height: auto;
+    border-radius: 10px; /* Pour une bordure arrondie */
+    }
+
+.slider-project {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.project-bar {
+    list-style-type: none;
+    padding: 0;
+}
+
+.project-bar li {
+    margin-bottom: 10px;
+}
+
+.project-bar h4 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.project-bar h6 {
+    font-size: 14px;
+    color: #6c757d;
+}
+        .carousel-inner img {
+        max-height: 600px; /* Adjust this value as needed */
+        width: auto;
+    }
+
+    </style>
+</head>
+<body>
+<div id="global-loader">
+    <div class="whirly-loader"></div>
+</div>
+
+<div class="main-wrapper">
+    {% include 'navbar.html' %}
+    <div class="page-wrapper">
+        <div class="content">
+            {% block main %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'assets/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'assets/js/feather.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery.slimscroll.min.js' %}"></script>
+<script src="{% static 'assets/plugins/apexchart/apexcharts.min.js' %}"></script>
+<script src="{% static 'assets/plugins/apexchart/chart-data.js' %}"></script>
+<script src="{% static 'assets/plugins/select2/js/select2.min.js' %}"></script>
+<script src="{% static 'assets/plugins/sweetalert/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'assets/plugins/sweetalert/sweetalerts.min.js' %}"></script>
+<script src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'assets/js/script.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#id_constructors').select2({
+            placeholder: 'Sélectionnez les participants',
+            allowClear: true
+        });
+    });
+    $(document).ready(function() {
+        var fileInputs = $('input[type="file"]');
+        fileInputs.change(function(event) {
+            var file = event.target.files[0];
+            var imagePreview = $(this).closest('.form-group').find('.image-preview');
+            if (file) {
+                var imageUrl = URL.createObjectURL(file);
+                imagePreview.attr('src', imageUrl);
+            }
+        });
+    });
+
+
+</script>
+
+</body>
+</html>

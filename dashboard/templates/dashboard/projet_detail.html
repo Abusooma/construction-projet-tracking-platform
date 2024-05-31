@@ -1,0 +1,97 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block main %}
+
+<div class="page-header">
+    <div class="page-title">
+        <h4>Détails du Projet</h4>
+
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <a href="{% url 'projets' %}" class="btn btn-secondary">Retour</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 col-sm-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Galerie de Projet</h5>
+                <div id="projectCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for image in projet_images %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ image.image.url }}" class="d-block w-100" alt="Image {{ forloop.counter }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel"
+                            data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel"
+                            data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-sm-12">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Informations du Projet</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>Nom du Projet:</strong> {{ projet.nom }}</li>
+                    <li class="list-group-item"><strong>Client:</strong> {{ projet.client.nom }}</li>
+                    <li class="list-group-item"><strong>Type de Projet:</strong> {{ projet.get_type_projet_display }}
+                    </li>
+                    <li class="list-group-item"><strong>Date de Création:</strong> {{ projet.create_at|date:"d/m/Y" }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Description du Projet</h5>
+                <p class="card-text">{{ projet.description }}</p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Tâches du Projet</h5>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Tâche</th>
+                        <th scope="col">Statut</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Tâche 1</td>
+                        <td><span class="badge bg-primary rounded-pill">En Cours</span></td>
+                    </tr>
+                    <tr>
+                        <td>Tâche 2</td>
+                        <td><span class="badge bg-success rounded-pill">Terminé</span></td>
+                    </tr>
+                    <tr>
+                        <td>Tâche 3</td>
+                        <td><span class="badge bg-danger rounded-pill">En Attente</span></td>
+                    </tr>
+                    <!-- Ajoutez plus de lignes de tableau pour plus de tâches -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

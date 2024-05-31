@@ -1,0 +1,103 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block main %}
+<div class="page-header">
+    <div class="page-title">
+        <h4>Créer un nouveau projet</h4>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-lg-6 col-sm-12 mb-3">
+                    <div class="form-group">
+                        <label>Nom du Projet</label>
+                        {{ form.nom }}
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-12 mb-3">
+                    <div class="form-group">
+                        <label>Client</label>
+                        <div class="d-flex align-items-center">
+                            {{ form.client }}
+                            <a href="{% url 'add-client' %}" class="btn btn-outline-primary btn-sm ms-2" title="Ajouter un client">
+                                <span>+</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-12 mb-3">
+                    <div class="form-group">
+                        <label>Type de Projet</label>
+                        {{ form.type_projet }}
+                    </div>
+                </div>
+                <div class="col-lg-6 col-sm-12 mb-3">
+                    <div class="form-group">
+                        <label>Réalisation</label>
+                        <div class="d-flex align-items-center small-width">
+                            {{ form.constructors }}
+                            <a href="{% url 'add-employ' %}" class="btn btn-outline-primary btn-sm ms-2" title="Ajouter un réalisateur">
+                                <span>+</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 mb-3">
+                    <div class="form-group">
+                        <label>Description</label>
+                        {{ form.description }}
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-12 mb-3">
+                    <div class="form-group">
+                        <label>Image 1</label>
+                        <div class="image-upload">
+                            <input type="file" class="form-control" name="image1">
+                            <div class="image-uploads mt-3 text-center">
+                                <img src="{% static 'assets/img/icons/upload.svg' %}" alt="img"
+                                     class="img-fluid image-preview" style="max-width: 50px;">
+                                <h4 class="mt-2">Glissez et déposez un fichier pour le télécharger</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-12 mb-3">
+                    <div class="form-group">
+                        <label>Image 2</label>
+                        <div class="image-upload">
+                            <input type="file" class="form-control" name="image2">
+                            <div class="image-uploads mt-3 text-center">
+                                <img src="{% static 'assets/img/icons/upload.svg' %}" alt="img"
+                                     class="img-fluid image-preview" style="max-width: 50px;">
+                                <h4 class="mt-2">Glissez et déposez un fichier pour le télécharger</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-sm-12 mb-3">
+                    <div class="form-group">
+                        <label>Image 3</label>
+                        <div class="image-upload">
+                            <input type="file" class="form-control" name="image3">
+                            <div class="image-uploads mt-3 text-center">
+                                <img src="{% static 'assets/img/icons/upload.svg' %}" alt="img"
+                                     class="img-fluid image-preview" style="max-width: 50px;">
+                                <h4 class="mt-2">Glissez et déposez un fichier pour le télécharger</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <button type="submit" class="btn btn-submit me-2">Soumettre</button>
+                    <a href="productlist.html" class="btn btn-cancel">Annuler</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
