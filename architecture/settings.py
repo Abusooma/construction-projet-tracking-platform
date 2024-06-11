@@ -125,14 +125,13 @@ LOGIN_URL = '/accounts/login/'
 
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
-
 # CONFIGURATION D'EMAIL
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'soumahaboubacarsopra@gmail.com'
-EMAIL_HOST_PASSWORD = 'jppe llzx aopb iokv'
+EMAIL_HOST_PASSWORD = 'scau kdns mtbj cdud'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 

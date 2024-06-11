@@ -4,7 +4,7 @@
 {% block main %}
 <div class="page-header">
     <div class="page-title">
-        <h4>Modifier un projet</h4>
+        <h4>Mettre à jour le projet</h4>
     </div>
 </div>
 
@@ -55,51 +55,48 @@
                         {{ form.description }}
                     </div>
                 </div>
-                <div class="col-lg-4 col-sm-12 mb-3">
-                    <div class="form-group">
-                        <label>Image 1</label>
-                        <div class="image-upload">
-                            <input type="file" class="form-control" name="image1">
-                            <div class="image-uploads mt-3 text-center">
-                                <img src="{% static 'assets/img/icons/upload.svg' %}" alt="img"
-                                     class="img-fluid image-preview" style="max-width: 50px;">
-                                <h4 class="mt-2">Glissez et déposez un fichier pour le télécharger</h4>
+
+                {{ formset.management_form }}
+                <div id="formset-container" class="d-flex flex-wrap">
+                    {% for form in formset %}
+                    <div class="col-lg-4 col-sm-12 mb-3 formset-form">
+                        <div class="form-group">
+                            <label>Image {{ forloop.counter }}</label>
+                            <div class="image-upload">
+                                {{ form.image }}
+                                {% if form.instance and form.instance.image %}
+                                <div class="image-uploads mt-3 text-center">
+                                    <img src="{{ form.instance.image.url }}" alt="Current Image"
+                                         class="img-fluid image-preview" style="max-width: 50px;">
+                                </div>
+                                {% endif %}
+                                <div class="image-uploads mt-3 text-center">
+                                    <img src="{% static 'assets/img/icons/upload.svg' %}" alt="img"
+                                         class="img-fluid image-preview" style="max-width: 50px;">
+                                    <h4 class="mt-2">Glissez et déposez un fichier pour le télécharger</h4>
+                                </div>
                             </div>
                         </div>
+                        {{ form.id }}  <!-- Champ caché pour l'ID du formulaire -->
+                        {% if forloop.counter > 3 %}
+                        <button type="button" class="btn btn-danger remove-form">Supprimer</button>
+                        {% endif %}
                     </div>
+                    {% endfor %}
                 </div>
-                <div class="col-lg-4 col-sm-12 mb-3">
-                    <div class="form-group">
-                        <label>Image 2</label>
-                        <div class="image-upload">
-                            <input type="file" class="form-control" name="image2">
-                            <div class="image-uploads mt-3 text-center">
-                                <img src="{% static 'assets/img/icons/upload.svg' %}" alt="img"
-                                     class="img-fluid image-preview" style="max-width: 50px;">
-                                <h4 class="mt-2">Glissez et déposez un fichier pour le télécharger</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-sm-12 mb-3">
-                    <div class="form-group">
-                        <label>Image 3</label>
-                        <div class="image-upload">
-                            <input type="file" class="form-control" name="image3">
-                            <div class="image-uploads mt-3 text-center">
-                                <img src="{% static 'assets/img/icons/upload.svg' %}" alt="img"
-                                     class="img-fluid image-preview" style="max-width: 50px;">
-                                <h4 class="mt-2">Glissez et déposez un fichier pour le télécharger</h4>
-                            </div>
-                        </div>
-                    </div>
+
+                <div class="col-lg-12 mb-3">
+                    <button type="button" class="btn btn-outline-primary" id="add-more-images">Ajouter plus d'images
+                    </button>
                 </div>
                 <div class="col-lg-12">
-                    <button type="submit" class="btn btn-submit me-2">Modifier</button>
-                    <a href="productlist.html" class="btn btn-cancel">Annuler</a>
+                    <button type="submit" class="btn btn-submit me-2">Soumettre</button>
+                    <a href="{% url 'projets' %}" class="btn btn-cancel">Annuler</a>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+
 {% endblock %}

@@ -6,13 +6,27 @@
     <div class="page-title">
         <h4>Liste des Projets</h4>
     </div>
+
     <div class="page-btn">
-        <a href="{% url 'add-projet' %}" class="btn btn-added"><img src="{% static 'assets/img/icons/plus.svg' %}" alt="img" class="me-1">Ajouter un projet</a>
+        {% if request.user.is_superuser %}
+        <a href="{% url 'add-projet' %}" class="btn btn-added"><img src="{% static 'assets/img/icons/plus.svg' %}"
+                                                                    alt="img" class="me-1">Ajouter un projet</a>
+        {% endif %}
     </div>
+
 </div>
 
 <div class="card">
     <div class="card-body">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}"
+             role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
         <div class="table-top">
             <div class="search-set">
                 <div class="search-path">
@@ -30,53 +44,59 @@
         <div class="table-responsive">
             <table class="table datanew">
                 <thead>
-                    <tr>
-                        <th>
-                            <label class="checkboxs">
-                                <input type="checkbox" id="select-all">
-                                <span class="checkmarks"></span>
-                            </label>
-                        </th>
-                        <th>Projet desc</th>
-                        <th>Client</th>
-                        <th>Type de Projet</th>
-                        <th>Action</th>
-                    </tr>
+                <tr>
+                    <th>
+                        <label class="checkboxs">
+                            <input type="checkbox" id="select-all">
+                            <span class="checkmarks"></span>
+                        </label>
+                    </th>
+                    <th>Projet desc</th>
+                    <th>Client</th>
+                    <th>Type de Projet</th>
+                    {% if request.user.is_superuser %}
+                    <th>Action</th>
+                    {% endif %}
+                </tr>
                 </thead>
                 <tbody>
-                    {% for projet in projets %}
-                    <tr>
-                        <td>
-                            <label class="checkboxs">
-                                <input type="checkbox">
-                                <span class="checkmarks"></span>
-                            </label>
-                        </td>
-                        <td class="productimgname">
-                            <a href="javascript:void(0);" class="product-img">
-                                {% if projet.get_first_image %}
-                                <img src="{{ projet.get_first_image }}" class="project-img">
-                                {% else %}
-                                <p>Pas d'image disponible</p>
-                                {% endif %}
-                            </a>
-                            <a href="javascript:void(0);">{{ projet.nom }}</a>
-                        </td>
-                        <td>{{ projet.client.nom }}</td>
-                        <td>{{ projet.get_type_projet }}</td>
-                        <td>
-                            <a class="me-3" href="{% url 'detail-projet' projet.slug %}">
-                                <img src="{% static 'assets/img/icons/eye.svg' %}" alt="img">
-                            </a>
-                            <a class="me-3" href="{% url 'update-projet' projet.slug %}">
-                                <img src="{% static 'assets/img/icons/edit.svg' %}" alt="img">
-                            </a>
-                            <a class="confirm-text" href="javascript:void(0);">
-                                <img src="{% static 'assets/img/icons/delete.svg' %}" alt="img">
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                {% for projet in projets %}
+                <tr>
+                    <td>
+                        <label class="checkboxs">
+                            <input type="checkbox">
+                            <span class="checkmarks"></span>
+                        </label>
+                    </td>
+                    <td class="productimgname">
+                        <a href="javascript:void(0);" class="product-img">
+                            {% if projet.get_first_image %}
+                            <img src="{{ projet.get_first_image }}" class="project-img">
+                            {% else %}
+                            <p>Pas d'image disponible</p>
+                            {% endif %}
+                        </a>
+                        <a href="javascript:void(0);">{{ projet.nom }}</a>
+                    </td>
+                    <td>{{ projet.client.nom }}</td>
+                    <td>{{ projet.get_type_projet }}</td>
+                    {% if request.user.is_superuser %}
+                    <td>
+
+                        <a class="me-3" href="{% url 'detail-projet' projet.slug %}">
+                            <img src="{% static 'assets/img/icons/eye.svg' %}" alt="img">
+                        </a>
+                        <a class="me-3" href="{% url 'update-projet' projet.slug %}">
+                            <img src="{% static 'assets/img/icons/edit.svg' %}" alt="img">
+                        </a>
+
+                        <a class="confirm-text" href="{% url 'delete-projet' projet.slug %}">
+                            <img src="{% static 'assets/img/icons/delete.svg' %}" alt="img">
+                        </a>
+                    </td>
+                     {% endif %}
+                </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>

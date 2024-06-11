@@ -83,6 +83,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'assets/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
@@ -93,30 +94,150 @@
 <script src="{% static 'assets/plugins/select2/js/select2.min.js' %}"></script>
 <script src="{% static 'assets/plugins/sweetalert/sweetalert2.all.min.js' %}"></script>
 <script src="{% static 'assets/plugins/sweetalert/sweetalerts.min.js' %}"></script>
-<script src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'assets/plugins/owlcarousel/owl.carousel.min.js' %}"></script>
 <script src="{% static 'assets/js/script.js' %}"></script>
+
 
 <script>
     $(document).ready(function() {
-        $('#id_constructors').select2({
-            placeholder: 'Sélectionnez les participants',
-            allowClear: true
-        });
+    $('#id_constructors').select2({
+        placeholder: 'Sélectionnez les participants',
+        allowClear: true
     });
-    $(document).ready(function() {
-        var fileInputs = $('input[type="file"]');
-        fileInputs.change(function(event) {
+
+    function initializeFileInputs() {
+        $(document).on('change', 'input[type="file"]', function(event) {
             var file = event.target.files[0];
             var imagePreview = $(this).closest('.form-group').find('.image-preview');
             if (file) {
                 var imageUrl = URL.createObjectURL(file);
-                imagePreview.attr('src', imageUrl);
+                imagePreview.attr('src', imageUrl).show();
+            }
+        });
+    }
+
+    function addImageForm(formContainer, formCount, totalForms) {
+        const newForm = formContainer.children('.formset-form:first').clone(false);
+        const formRegex = /images-(\d+)-/g;
+
+        newForm.find(':input').each(function() {
+            const name = $(this).attr('name').replace(formRegex, `images-${formCount}-`);
+            const id = $(this).attr('id').replace(formRegex, `images-${formCount}-`);
+            $(this).attr({'name': name, 'id': id});
+            if ($(this).attr('type') === 'file') {
+                $(this).val('');
+                $(this).siblings('.image-preview').attr('src', '').hide();
+            } else {
+                $(this).val('').prop('checked', false);
+            }
+        });
+
+        newForm.find('.current-image').remove();
+        newForm.find('.remove-form').remove();
+        newForm.append('<button type="button" class="btn btn-danger remove-form">Supprimer</button>');
+        formContainer.append(newForm);
+        formCount++;
+        totalForms.val(formCount);
+        updateLabels(formContainer);
+    }
+
+    function updateLabels(formContainer) {
+        formContainer.children('.formset-form').each(function(index) {
+            $(this).find('label').first().text(`Image ${index + 1}`);
+        });
+    }
+
+    function initializeAddRemoveButtons(formContainer, totalForms) {
+        let formCount = formContainer.children('.formset-form').length;
+
+        $('#add-more-images').on('click', function() {
+            addImageForm(formContainer, formCount, totalForms);
+        });
+
+        formContainer.on('click', '.remove-form', function() {
+            $(this).closest('.formset-form').remove();
+            formCount--;
+            totalForms.val(formCount);
+            updateLabels(formContainer);
+        });
+
+        updateLabels(formContainer);
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    $('#statusModal').on('show.bs.modal', function(event) {
+        var button = $(event.relatedTarget);
+        var tacheId = button.data('tache-id');
+        var modal = $(this);
+        modal.find('#tache_id').val(tacheId);
+    });
+
+    $('#statusForm').on('submit', function(event) {
+        event.preventDefault();
+        var formData = $(this).serialize();
+        var tacheId = $('#tache_id').val();
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'change_tache_status' %}",
+            data: formData,
+            headers: { 'X-CSRFToken': csrftoken },
+            success: function(response) {
+                if (response.success) {
+                    $('#statusModal').modal('hide');
+                    $('#status-' + tacheId).text(response.new_status_display);
+                    var statusClasses = {
+                        'en_attente': 'bg-warning',
+                        'en_cours': 'bg-info',
+                        'terminee': 'bg-success',
+                        'annulee': 'bg-danger'
+                    };
+                    $('#status-' + tacheId)
+                        .removeClass('bg-warning bg-info bg-success bg-danger')
+                        .addClass(statusClasses[response.new_status]);
+                    location.reload();  // Recharger la page pour refléter les changements
+                } else {
+                    console.log('Erreur:', response);
+                }
+            },
+            error: function(response) {
+                console.log('Erreur:', response);
             }
         });
     });
 
+    const formContainer = $('#formset-container');
+    const totalForms = $('#id_images-TOTAL_FORMS');
+    initializeFileInputs();
+    initializeAddRemoveButtons(formContainer, totalForms);
 
+    formContainer.children('.formset-form').each(function() {
+        const fileInput = $(this).find('input[type="file"]');
+        const imagePreview = $(this).find('.image-preview');
+        const currentImageUrl = fileInput.attr('data-preview');
+        if (currentImageUrl) {
+            imagePreview.attr('src', currentImageUrl).show();
+        }
+    });
+});
 </script>
+
 
 </body>
 </html>

@@ -21,5 +21,9 @@ urlpatterns = [
     path('add_projet/', views.addProjet, name='add-projet'),
     path('detail_projet/<str:slug>', views.detailProjet, name='detail-projet'),
     path('update/<str:slug>', views.updateProjet, name='update-projet'),
+    path('delete_projet/<str:slug>', views.deleteProjet, name='delete-projet'),
+
+    # Changement du statut de tache
+    path('change_tache_status/', views.change_tache_status, name='change_tache_status'),
 
 ]

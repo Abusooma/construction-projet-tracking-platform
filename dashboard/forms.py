@@ -1,5 +1,7 @@
 from django import forms
-from .models import ClientProfile, Employe, Projet, ProjetImage
+from django.forms import HiddenInput
+from .models import ClientProfile, Employe, Projet, ProjetImage, Commentaire
+from django.forms import ClearableFileInput
 
 
 class ClientProfileForm(forms.ModelForm):
@@ -83,7 +85,7 @@ class ProjetForm(forms.ModelForm):
     constructors = forms.ModelMultipleChoiceField(
         queryset=Employe.objects.all(),
         widget=forms.SelectMultiple(attrs={
-            'class': 'form-control'
+            'class': 'form-control select2'
         })
     )
     description = forms.CharField(
@@ -113,3 +115,18 @@ class ProjetImageForm(forms.ModelForm):
     class Meta:
         model = ProjetImage
         fields = ['image']
+
+    def __init__(self, *args, **kwargs):
+        super(ProjetImageForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['image'].widget = forms.FileInput(attrs={'class': 'custom-file-input'})
+
+
+class CommentaireForm(forms.ModelForm):
+    class Meta:
+        model = Commentaire
+        fields = ['commentaire']
+        widgets = {
+            'commentaire': forms.Textarea(
+                attrs={'class': 'form-control comment-textarea', 'rows': 4, 'placeholder': 'Votre commentaire ici...'}),
+        }

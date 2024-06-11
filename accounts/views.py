@@ -12,7 +12,7 @@ def login_user(request):
         user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, 'User logged in successfully')
+            messages.success(request, 'Utilisateur connecté avec succès')
             return redirect('home')
         else:
             messages.error(request, 'Erreur de connexion Veuillez reessayez s\'il vous plaît ..!')
@@ -22,7 +22,7 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    messages.success(request, 'User logged out successfully ...!')
+    messages.success(request, 'Utilisateur déconnecté avec succès ...!')
     return redirect('login')
 
 

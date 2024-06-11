@@ -1,12 +1,26 @@
 from django.contrib.auth import get_user_model
+from django.forms import inlineformset_factory
+from django.http import JsonResponse
 from django.template.loader import render_to_string
-from django.core.mail import EmailMultiAlternatives, send_mail
+from django.core.mail import send_mail
+from django.views.decorators.http import require_POST
+
 from architecture import settings
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ClientProfileForm, EmployeForm, ProjetForm, ProjetImage
-from .models import ClientProfile, Employe, Projet
-from .utils import generate_random_password
+from .forms import ClientProfileForm, EmployeForm, ProjetForm, ProjetImageForm, CommentaireForm
+from .models import ClientProfile, Employe, Projet, ProjetImage, Tache, Commentaire
+from .utils import generate_random_password, liste_taches
+
+# Créer le formset pour ProjetImage
+ProjetImageFormSet = inlineformset_factory(
+    Projet,
+    ProjetImage,
+    form=ProjetImageForm,
+    fields=('image',),  # Inclure les champs 'id' et 'DELETE'
+    extra=3,
+    can_delete=True
+)
 
 
 def home(request):
@@ -32,11 +46,12 @@ def addClient(request):
                 address=client.address,
                 password=password_generate
             )
-            user.is_customer = True
+
             client.user = user
             client.save()
 
-            html_message = render_to_string('email/invitation_client.html', {'user': user, 'password': password_generate})
+            html_message = render_to_string('email/invitation_client.html',
+                                            {'user': user, 'password': password_generate})
             subject = 'Vos informations de connexion'
             send_mail(subject, None, settings.EMAIL_HOST_USER, [user.email], html_message=html_message,
                       fail_silently=True)
@@ -131,70 +146,113 @@ def deleteEmploy(request, pk):
 
 
 def allProjets(request):
-    all_projets = Projet.objects.all()
+    if request.user.is_superuser:
+        all_projets = Projet.objects.all()
+    else:
+        # Filtre les projets par le client associé à l'utilisateur actuel
+        all_projets = Projet.objects.filter(client=request.user.client_profile)
+
     return render(request, 'dashboard/projetlist.html', context={'projets': all_projets})
 
 
 def addProjet(request):
     if request.method == 'POST':
         form = ProjetForm(request.POST, request.FILES)
+        formset = ProjetImageFormSet(request.POST, request.FILES)
 
-        if form.is_valid():
+        if form.is_valid() and formset.is_valid():
             projet = form.save()
-
-            image1 = request.FILES.get('image1')
-            image2 = request.FILES.get('image2')
-            image3 = request.FILES.get('image3')
-
-            if image1:
-                ProjetImage.objects.create(projet=projet, image=image1)
-            if image2:
-                ProjetImage.objects.create(projet=projet, image=image2)
-            if image3:
-                ProjetImage.objects.create(projet=projet, image=image3)
-
-            projet.save()
-            messages.success(request, 'Projet ajouter avec success ...!')
-
+            formset.instance = projet
+            formset.save()
+            for tache in liste_taches:
+                Tache.objects.create(projet=projet, description=tache)
+            messages.success(request, 'Projet ajouté avec succès ...!')
             return redirect('projets')
         else:
-            messages.success(request, 'Quelque chose s\'est mal passé')
+            print(form.errors)
+            print(formset.errors)
+            messages.error(request, 'Quelque chose s\'est mal passé')
             return redirect('add-projet')
     else:
         form = ProjetForm()
+        formset = ProjetImageFormSet()
 
-    return render(request, 'dashboard/addprojet.html', {'form': form})
+    return render(request, 'dashboard/addprojet.html', {'form': form, 'formset': formset})
 
 
 def detailProjet(request, slug):
     projet = get_object_or_404(Projet, slug=slug)
+    taches = Tache.objects.filter(projet=projet)
     projet_images = projet.images.all()
-    return render(request, 'dashboard/projet_detail.html', context={'projet': projet, 'projet_images': projet_images})
+    commentaires = Commentaire.objects.filter(owner=request.user, projet=projet)
+
+    if request.method == 'POST':
+        form = CommentaireForm(request.POST)
+        if form.is_valid():
+            commentaire = form.save(commit=False)
+            commentaire.projet = projet
+            commentaire.owner = request.user
+            commentaire.save()
+            messages.success(request, "Votre commentaire a été soumis avec succès. Merci pour votre retour !")
+            return redirect('detail-projet', slug=slug)
+        else:
+            messages.error(request, 'Quelque chose s\'est mal passé ..!')
+    else:
+        form = CommentaireForm()
+
+    context = {
+        'projet': projet,
+        'projet_images': projet_images,
+        'taches': taches,
+        'form': form,
+        'commentaires': commentaires,
+    }
+    return render(request, 'dashboard/projet_detail.html', context=context)
 
 
 def updateProjet(request, slug):
     projet = get_object_or_404(Projet, slug=slug)
+    ProjetImageFormSet = inlineformset_factory(
+        Projet,
+        ProjetImage,
+        form=ProjetImageForm,
+        fields=('image',),
+        extra=0,  # No additional blank forms initially
+        can_delete=True
+    )
 
     if request.method == 'POST':
-        form = ProjetForm(request.POST, request.FILES, instance=projet)
+        form = ProjetForm(request.POST, instance=projet)
+        formset = ProjetImageFormSet(request.POST, request.FILES, instance=projet)
 
-        if form.is_valid():
-            projet = form.save()
-
-            # Supprimez les images existantes pour ce projet
-            ProjetImage.objects.filter(projet=projet).delete()
-
-            # Enregistrez les nouvelles images
-            for i in range(1, 4):
-                image = request.FILES.get(f'image{i}')
-                if image:
-                    ProjetImage.objects.create(projet=projet, image=image)
-
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
             messages.success(request, 'Projet mis à jour avec succès ...!')
             return redirect('projets')
         else:
             messages.error(request, 'Quelque chose s\'est mal passé')
     else:
         form = ProjetForm(instance=projet)
+        formset = ProjetImageFormSet(instance=projet)
 
-    return render(request, 'dashboard/updateprojet.html', {'form': form})
+    return render(request, 'dashboard/updateprojet.html', {'form': form, 'formset': formset})
+
+
+def deleteProjet(request, slug):
+    projet = get_object_or_404(Projet, slug=slug)
+    projet.delete()
+    messages.success(request, 'Projet supprimé avec success')
+    return redirect('projets')
+
+
+@require_POST  # Assure que la vue n'accepte que les requêtes POST
+def change_tache_status(request):
+    tache_id = request.POST.get('tache_id')
+    new_status = request.POST.get('statut')
+
+    tache = get_object_or_404(Tache, id=tache_id)
+    tache.statut = new_status
+    tache.save()
+
+    return JsonResponse({'success': True, 'new_status': new_status})

@@ -59,6 +59,9 @@ class Projet(models.Model):
     type_projet = models.CharField(max_length=20, choices=TYPE, null=True)
     create_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.nom
+
     @property
     def get_type_projet(self):
         return dict(self.TYPE).get(self.type_projet, 'N/A')
@@ -71,18 +74,19 @@ class Projet(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.nom)
+            super().save(*args, **kwargs)
+            # Maintenant que l'ID est disponible, créer le slug et sauvegarder à nouveau
+            self.slug = slugify(f"{self.nom}-{self.pk}")
+            kwargs['force_insert'] = False  # Pour éviter une erreur d'insertion en double
         super().save(*args, **kwargs)
 
 
 class ProjetImage(models.Model):
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='projet_images/')
-    caption = models.CharField(max_length=255, blank=True,
-                               null=True)
+    image = models.ImageField(upload_to='projet_images/', blank=True, null=True)
 
     def __str__(self):
-        return self.caption if self.caption else f"Image for {self.projet.nom}"
+        return f"Image for {self.projet.nom}"
 
 
 class Tache(models.Model):
@@ -95,11 +99,25 @@ class Tache(models.Model):
 
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE, related_name='taches')
     description = models.TextField()
-    statut = models.CharField(max_length=20, choices=STATUT_TACHE)
+    statut = models.CharField(max_length=20, choices=STATUT_TACHE, default='en_attente')
 
     def __str__(self):
-        return self.nom
+        return self.description
 
-    @property
-    def type_projet(self):
+    def get_statut_display(self):
         return dict(self.STATUT_TACHE).get(self.statut, 'N/A')
+
+
+class Commentaire(models.Model):
+    projet = models.ForeignKey(Projet, on_delete=models.CASCADE, related_name='commentaires')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='commentaires',
+                              null=True)
+    commentaire = models.TextField()
+    date_creation = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('Commentaire')
+        verbose_name_plural = _('Commentaires')
+
+    def __str__(self):
+        return f"Commentaire de {self.owner} sur {self.projet}"
