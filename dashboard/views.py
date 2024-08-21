@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.forms import inlineformset_factory
 from django.http import JsonResponse
 from django.template.loader import render_to_string
@@ -23,6 +24,7 @@ ProjetImageFormSet = inlineformset_factory(
 )
 
 
+@login_required
 def home(request):
     return render(request, 'dashboard/index.html')
 
@@ -32,6 +34,7 @@ def all_clients(request):
     return render(request, 'dashboard/liste_clients.html', context={'clients': clients})
 
 
+@login_required
 def addClient(request):
     if request.method == 'POST':
         form = ClientProfileForm(request.POST)
@@ -69,6 +72,7 @@ def addClient(request):
     return render(request, 'dashboard/addclient.html', context={'form': form})
 
 
+@login_required
 def updateClient(request, pk):
     client = get_object_or_404(ClientProfile, pk=pk)
     user = client.user
@@ -93,6 +97,7 @@ def updateClient(request, pk):
     return render(request, 'dashboard/updateclient.html', context={'form': form, 'client': client})
 
 
+@login_required
 def deleteClient(request, pk):
     client = get_object_or_404(ClientProfile, pk=pk)
     user = client.user
@@ -102,11 +107,13 @@ def deleteClient(request, pk):
     return redirect('list-client')
 
 
+@login_required
 def allEmploye(request):
     all_employs = Employe.objects.all()
     return render(request, 'dashboard/list_employ.html', context={'employes': all_employs})
 
 
+@login_required
 def addEmploy(request):
     if request.method == 'POST':
         form = EmployeForm(request.POST)
@@ -123,6 +130,7 @@ def addEmploy(request):
     return render(request, 'dashboard/addEmploye.html', context={'form': form})
 
 
+@login_required
 def updateEmploye(request, pk):
     employ = get_object_or_404(Employe, pk=pk)
     form = EmployeForm(instance=employ)
@@ -138,6 +146,7 @@ def updateEmploye(request, pk):
     return render(request, 'dashboard/updateEmploye.html', context={'form': form})
 
 
+@login_required
 def deleteEmploy(request, pk):
     employ = get_object_or_404(Employe, pk=pk)
     employ.delete()
@@ -145,6 +154,7 @@ def deleteEmploy(request, pk):
     return redirect('list-employ')
 
 
+@login_required
 def allProjets(request):
     if request.user.is_superuser:
         all_projets = Projet.objects.all()
@@ -155,6 +165,7 @@ def allProjets(request):
     return render(request, 'dashboard/projetlist.html', context={'projets': all_projets})
 
 
+@login_required
 def addProjet(request):
     if request.method == 'POST':
         form = ProjetForm(request.POST, request.FILES)
@@ -166,23 +177,32 @@ def addProjet(request):
             formset.save()
             for tache in liste_taches:
                 Tache.objects.create(projet=projet, description=tache)
+
             messages.success(request, 'Projet ajouté avec succès ...!')
             return redirect('projets')
         else:
-            print(form.errors)
-            print(formset.errors)
+
             messages.error(request, 'Quelque chose s\'est mal passé')
             return redirect('add-projet')
     else:
         form = ProjetForm()
         formset = ProjetImageFormSet()
 
-    return render(request, 'dashboard/addprojet.html', {'form': form, 'formset': formset})
+    number_of_task = 0
+
+    context = {
+        'form': form, 'formset': formset,
+        'number_of_task': number_of_task
+    }
+
+    return render(request, 'dashboard/addprojet.html', context=context)
 
 
+@login_required
 def detailProjet(request, slug):
     projet = get_object_or_404(Projet, slug=slug)
     taches = Tache.objects.filter(projet=projet)
+    number_of_task = taches.count()
     projet_images = projet.images.all()
     commentaires = Commentaire.objects.filter(owner=request.user, projet=projet)
 
@@ -206,12 +226,16 @@ def detailProjet(request, slug):
         'taches': taches,
         'form': form,
         'commentaires': commentaires,
+        'number_of_task': number_of_task
     }
     return render(request, 'dashboard/projet_detail.html', context=context)
 
 
+@login_required
 def updateProjet(request, slug):
     projet = get_object_or_404(Projet, slug=slug)
+    taches = Tache.objects.filter(projet=projet)
+    number_of_task = taches.count()
     ProjetImageFormSet = inlineformset_factory(
         Projet,
         ProjetImage,
@@ -236,9 +260,15 @@ def updateProjet(request, slug):
         form = ProjetForm(instance=projet)
         formset = ProjetImageFormSet(instance=projet)
 
-    return render(request, 'dashboard/updateprojet.html', {'form': form, 'formset': formset})
+    context = {
+        'form': form, 'formset': formset,
+        'number_of_task': number_of_task
+    }
+
+    return render(request, 'dashboard/updateprojet.html', context=context)
 
 
+@login_required
 def deleteProjet(request, slug):
     projet = get_object_or_404(Projet, slug=slug)
     projet.delete()

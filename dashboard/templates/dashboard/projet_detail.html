@@ -122,7 +122,8 @@
         <h5 class="card-title">Progression des Tâches</h5>
         <div class="progress mt-2">
             <div id="progressBar" class="progress-bar" role="progressbar" style="width: {{ progressPercentage }}%;"
-                 aria-valuenow="{{ progressPercentage }}" aria-valuemin="0" aria-valuemax="100">{{ progressPercentage }}%
+                 aria-valuenow="{{ progressPercentage }}" aria-valuemin="0" aria-valuemax="100">{{ progressPercentage
+                }}%
             </div>
         </div>
     </div>
@@ -132,7 +133,9 @@
 <!-- Affichage des commentaires -->
 <div class="card mb-4">
     <div class="card-body">
+        {% if not request.user.is_superuser %}
         <h5 class="card-title">Commentaires</h5>
+        {% endif %}
         {% for commentaire in commentaires %}
         {% if request.user == commentaire.owner %}
         <div class="mb-3">
@@ -143,9 +146,11 @@
         <hr>
         {% endif %}
         {% empty %}
+        {% if not request.user.is_superuser %}
         <div class="mbt-2">
             <p>Votre commentaire apparaîtra ici une fois ajouté ...!</p>
         </div>
+        {% endif %}
         {% endfor %}
     </div>
 </div>

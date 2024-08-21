@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'dashboard',
+    'landpage'
 ]
 
 MIDDLEWARE = [
@@ -118,8 +119,6 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
-LOGIN_REDIRECT_URL = 'home'
 
 LOGIN_URL = '/accounts/login/'
 

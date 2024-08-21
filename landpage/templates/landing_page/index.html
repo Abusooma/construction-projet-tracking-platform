@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Agence de Construction - Accueil</title>
+    <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'landingpage/css/style.css' %}"/>
+    <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+            rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+</head>
+<body>
+<!-- Navigation -->
+<nav
+        class="navbar navbar-expand-lg navbar-light fixed-top bg-white shadow-sm"
+>
+    <div class="container">
+        <a class="navbar-brand" href="#"
+        ><img
+                src="{% static 'landingpage/images/logo2.jpg' %}"
+                alt="Logo"
+                class="d-inline-block align-top"
+                id="logo"
+        /></a>
+        <button
+                class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#hero">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'landing-projets' %}">Nos Projets</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'projets' %}">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<header id="hero" class="hero-section">
+    <div class="video-background">
+        <video autoplay muted loop>
+            <source src="{% static 'landingpage/images/video1.mp4' %}" type="video/mp4"/>
+        </video>
+    </div>
+    <div class="hero-content text-center text-white">
+        <h1 class="animated-text">Bienvenue à notre Agence de Construction</h1>
+        <p class="lead animated-text">Nous construisons vos rêves en réalité</p>
+        <a href="#projects" class="btn btn-lg btn-light mt-4"
+        >Voir Nos Projets</a
+        >
+    </div>
+</header>
+
+<!-- Services Section -->
+<section id="services" class="services py-5">
+    <div class="container">
+        <h2 class="text-center">Nos Services</h2>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <div class="service-box mt-5 mx-auto animated-box">
+                    <i class="fas fa-home fa-4x text-dark mb-3"></i>
+                    <h3 class="mb-3">Construction de Maison</h3>
+                    <p class="text-muted">
+                        Nous vous accompagnons de la conception à la réalisation de
+                        votre maison.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="service-box mt-5 mx-auto animated-box">
+                    <i class="fas fa-tools fa-4x text-dark mb-3"></i>
+                    <h3 class="mb-3">Rénovation</h3>
+                    <p class="text-muted">
+                        Donnez une nouvelle vie à votre maison avec nos services de
+                        rénovation.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="service-box mt-5 mx-auto animated-box">
+                    <i class="fas fa-clipboard-list fa-4x text-dark mb-3"></i>
+                    <h3 class="mb-3">Gestion de Projet</h3>
+                    <p class="text-muted">
+                        Nous assurons une gestion de projet efficace pour un résultat
+                        optimal.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Projects Section -->
+<section id="projects" class="projects py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center">Nos Projets Réalisés</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <img
+                            src="{% static 'landingpage/images/m1.jpg' %}"
+                            class="card-img-top animated-img"
+                            alt="Projet 1"
+                    />
+                    <div class="card-body">
+                        <h5 class="card-title">Projet 1</h5>
+                        <p class="card-text">Description du projet 1.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <img
+                            src="{% static 'landingpage/images/m2.jpg' %}"
+                            class="card-img-top animated-img"
+                            alt="Projet 2"
+                    />
+                    <div class="card-body">
+                        <h5 class="card-title">Projet 2</h5>
+                        <p class="card-text">Description du projet 2.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <img
+                            src="{% static 'landingpage/images/m3.jpg' %}"
+                            class="card-img-top animated-img"
+                            alt="Projet 3"
+                    />
+                    <div class="card-body">
+                        <h5 class="card-title">Projet 3</h5>
+                        <p class="card-text">Description du projet 3.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Location Map -->
+<section id="location" class="location py-5 w-100">
+    <div class="w-100">
+        <h2 class="text-center">Où nous trouver</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                {{ map|safe }}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact py-5">
+    <div class="container">
+        <h2 class="text-center">Contactez-Nous</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form>
+                    <div class="form-group">
+                        <label for="name">Nom</label>
+                        <input
+                                type="text"
+                                class="form-control"
+                                id="name"
+                                placeholder="Votre nom"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input
+                                type="email"
+                                class="form-control"
+                                id="email"
+                                placeholder="Votre email"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea
+                                class="form-control"
+                                id="message"
+                                rows="5"
+                                placeholder="Votre message"
+                        ></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Envoyer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Contact</h5>
+                <p>123 Avenue de La Liberté, Tunis, Tunisie</p>
+                <p>Email: contact@espacedesign.com</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Liens Utiles</h5>
+                <p>
+                    <a href="#" class="text-white">Politique de confidentialité</a>
+                </p>
+                <p><a href="#" class="text-white">Conditions d'utilisation</a></p>
+            </div>
+            <div class="col-md-4">
+                <h5>Suivez-nous</h5>
+                <div class="social-icons mt-3">
+                    <a href="#"><i class="fab fa-facebook fa-lg"></i></a>
+                    <a href="#"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#"><i class="fab fa-instagram fa-lg"></i></a>
+                    <a href="#"><i class="fab fa-linkedin fa-lg"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <p>
+                    &copy; 2024 Espace Design International. Tous droits réservés.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="{% static 'landingpage/js/script.js' %}"></script>
+</body>
+</html>

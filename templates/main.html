@@ -235,9 +235,17 @@
             imagePreview.attr('src', currentImageUrl).show();
         }
     });
+
+    function updateProgressBar() {
+            var totalTasks = {{ number_of_task }};
+            var completedTasks = $('.bg-success').length;
+            var progressPercentage = (completedTasks / totalTasks) * 100;
+            $('#progressBar').css('width', progressPercentage + '%').attr('aria-valuenow', progressPercentage).text(progressPercentage + '%');
+        }
+
+        // Appeler la fonction pour mettre à jour la barre de progression initialement
+        updateProgressBar();
 });
 </script>
-
-
 </body>
 </html>
