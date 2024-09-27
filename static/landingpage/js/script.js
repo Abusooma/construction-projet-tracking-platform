@@ -32,14 +32,18 @@ $(document).ready(function () {
     });
   });
 
-  // Project slider
-  $(".project-slider").each(function () {
-    var $slider = $(this);
-    var $images = $slider.find(".project-image");
+  // Project gallery
+  $('.project-card').each(function() {
+    var $card = $(this);
+    var $gallery = $card.find('.project-gallery');
+    var $images = $gallery.find('.project-image');
+    var $prevBtn = $gallery.find('.gallery-nav.prev');
+    var $nextBtn = $gallery.find('.gallery-nav.next');
+    var $closeBtn = $gallery.find('.gallery-close');
     var currentIndex = 0;
 
     function showImage(index) {
-      $images.removeClass("active").eq(index).addClass("active");
+      $images.removeClass('active').eq(index).addClass('active');
     }
 
     function nextImage() {
@@ -47,6 +51,61 @@ $(document).ready(function () {
       showImage(currentIndex);
     }
 
-    setInterval(nextImage, 3000); // Change image every 3 seconds
+    function prevImage() {
+      currentIndex = (currentIndex - 1 + $images.length) % $images.length;
+      showImage(currentIndex);
+    }
+
+    function openGallery() {
+      $gallery.css('display', 'flex');
+      showImage(0);
+      $('body').css('overflow', 'hidden'); // Prevent page scrolling
+    }
+
+    function closeGallery() {
+      $gallery.hide();
+      currentIndex = 0; // Reset index
+      $('body').css('overflow', ''); // Restore page scrolling
+      $images.removeClass('active'); // Remove 'active' class from all images
+    }
+
+    $card.on('click', function(e) {
+      if (!$(e.target).closest('.project-gallery').length) {
+        openGallery();
+      }
+    });
+
+    $closeBtn.on('click', function(e) {
+      e.stopPropagation();
+      closeGallery();
+    });
+
+    $gallery.on('click', function(e) {
+      if (e.target === this) {
+        closeGallery();
+      }
+    });
+
+    $nextBtn.on('click', function(e) {
+      e.stopPropagation();
+      nextImage();
+    });
+
+    $prevBtn.on('click', function(e) {
+      e.stopPropagation();
+      prevImage();
+    });
+
+    $(document).keydown(function(e) {
+      if ($gallery.is(':visible')) {
+        if (e.which === 37) {
+          prevImage();
+        } else if (e.which === 39) {
+          nextImage();
+        } else if (e.which === 27) {
+          closeGallery();
+        }
+      }
+    });
   });
 });

@@ -28,11 +28,10 @@
             <div class="login-content">
                 <div class="login-userset">
                     <div class="login-logo">
-                        <img src="{% static 'assets/img/logo.png' %}" alt="img">
+                        <img src="{% static 'assets/img/logo.jpg' %}" alt="img">
                     </div>
-                    <div class="login-userheading">
+                    <div class="login-userheading ">
                         <h3>Sign In</h3>
-                        <h4>Please login to your account</h4>
                     </div>
                     {% if messages %}
                     {% for message in messages %}
@@ -62,12 +61,13 @@
                             </div>
                         </div>
                         <div class="form-login">
-                            <div class="alreadyuser">
-                                <h4><a href="forgetpassword.html" class="hover-a">Forgot Password?</a></h4>
+                            <div class="form-login">
+                                <button class="btn btn-secondary" type="submit">Sign In</button>
                             </div>
-                        </div>
-                        <div class="form-login">
-                            <button class="btn btn-login" type="submit">Sign In</button>
+                            <div class="alreadyuser">
+                                <h4><a href="forgetpassword.html" class="hover-a text-secondary">Forgot Password?</a>
+                                </h4>
+                            </div>
                         </div>
                     </form>
                     <div class="signinform text-center">

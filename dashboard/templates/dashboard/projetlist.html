@@ -1,4 +1,5 @@
 {% extends 'main.html' %}
+
 {% load static %}
 
 {% block main %}
@@ -9,8 +10,8 @@
 
     <div class="page-btn">
         {% if request.user.is_superuser %}
-        <a href="{% url 'add-projet' %}" class="btn btn-added"><img src="{% static 'assets/img/icons/plus.svg' %}"
-                                                                    alt="img" class="me-1">Ajouter un projet</a>
+        <a href="{% url 'add-projet' %}" class="btn btn-added">
+            <img src="{% static 'assets/img/icons/plus.svg' %}" alt="img" class="me-1">Ajouter un projet</a>
         {% endif %}
     </div>
 
@@ -40,7 +41,6 @@
                 </div>
             </div>
         </div>
-
         <div class="table-responsive">
             <table class="table datanew">
                 <thead>
@@ -97,7 +97,7 @@
                             <img src="{% static 'assets/img/icons/delete.svg' %}" alt="img">
                         </a>
                     </td>
-                     {% endif %}
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 </tbody>

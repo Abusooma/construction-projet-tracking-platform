@@ -111,50 +111,56 @@
     </div>
 </section>
 
+
+{% for projet in les_projets %}
+<div class="project-card">
+    <div class="row">
+        <div class="col-md-8 project-image-container">
+            <div class="project-slider">
+                {% for image in projet.images.all %}
+                <img
+                        src="{{ image.image.url }}"
+                        alt="{{ projet.description }} Image {{ forloop.counter }}"
+                        class="project-image"
+                />
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4 project-info">
+            <h5>{{ projet.nom }}</h5>
+            <p>{{ projet.description }}</p>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
 <!-- Projects Section -->
 <section id="projects" class="projects py-5 bg-light">
     <div class="container">
         <h2 class="text-center">Nos Projets Réalisés</h2>
         <div class="row">
+            {% for projet in les_projets %}
             <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img
-                            src="{% static 'landingpage/images/m1.jpg' %}"
-                            class="card-img-top animated-img"
-                            alt="Projet 1"
-                    />
-                    <div class="card-body">
-                        <h5 class="card-title">Projet 1</h5>
-                        <p class="card-text">Description du projet 1.</p>
+                <div class="project-card">
+                    <div class="project-thumbnail">
+                        <img src="{{ projet.get_first_image }}" alt="Projet 1">
+                    </div>
+                    <d iv class="project-gallery">
+                        <div class="gallery-container">
+                            {% for image in projet.images.all %}
+                            <img
+                                    src="{{ image.image.url }}"
+                                    alt="{{ projet.description }} Image {{ forloop.counter }}"
+                                    class="project-image"/>
+                            {% endfor %}
+                        </div>
+                        <button class="gallery-nav prev">&lt;</button>
+                        <button class="gallery-nav next">&gt;</button>
+                        <button class="gallery-close">&times;</button>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img
-                            src="{% static 'landingpage/images/m2.jpg' %}"
-                            class="card-img-top animated-img"
-                            alt="Projet 2"
-                    />
-                    <div class="card-body">
-                        <h5 class="card-title">Projet 2</h5>
-                        <p class="card-text">Description du projet 2.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img
-                            src="{% static 'landingpage/images/m3.jpg' %}"
-                            class="card-img-top animated-img"
-                            alt="Projet 3"
-                    />
-                    <div class="card-body">
-                        <h5 class="card-title">Projet 3</h5>
-                        <p class="card-text">Description du projet 3.</p>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>

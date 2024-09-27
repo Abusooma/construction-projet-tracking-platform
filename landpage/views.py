@@ -7,8 +7,8 @@ from dashboard.models import Projet
 
 
 def index(request):
-    # Définir les coordonnées de l'entreprise
-    # 36.818278, 10.185722
+    les_projets = Projet.objects.all()[:5]
+
     lat = 36.818278
     long = 10.185722
 
@@ -19,7 +19,6 @@ def index(request):
         tiles=None
     )
 
-    # Ajouter les tuiles Google Maps
     folium.TileLayer(
         tiles='https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
         attr='Google',
@@ -30,7 +29,6 @@ def index(request):
         control=True
     ).add_to(m)
 
-    # Ajouter un marqueur pour l'entreprise
     folium.Marker(
         [lat, long],
         popup="Espace Design International",
@@ -42,10 +40,9 @@ def index(request):
     folium.LayerControl().add_to(m)
     Fullscreen().add_to(m)
 
-    # Convertir la carte en HTML
     map_html = m._repr_html_()
 
-    return render(request, 'landing_page/index.html', {"map": map_html})
+    return render(request, 'landing_page/index.html', {"map": map_html, 'les_projets': les_projets})
 
 
 def projets(request):
