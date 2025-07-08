@@ -56,7 +56,9 @@
                     <th>Prenom</th>
                     <th>Telephone</th>
                     <th>Email</th>
+                    {% if request.user.is_superuser %}
                     <th>Action</th>
+                    {% endif %}
                 </tr>
                 </thead>
                 <tbody>
@@ -76,7 +78,7 @@
                     <td>
                         {{ client.email }}
                     </td>
-
+                    {% if request.user.is_superuser %}
                     <td>
                         <a class="me-3" href="{% url 'update-client' client.id %}">
                             <img src="{% static 'assets/img/icons/edit.svg' %}" alt="img"/>
@@ -85,6 +87,7 @@
                             <img src="{% static 'assets/img/icons/delete.svg' %}" alt="img"/>
                         </a>
                     </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 </tbody>

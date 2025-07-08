@@ -88,11 +88,9 @@
                     </td>
                     {% if request.user.is_superuser %}
                     <td>
-
                         <a class="me-3" href="{% url 'update-projet' projet.slug %}">
                             <img src="{% static 'assets/img/icons/edit.svg' %}" alt="img">
                         </a>
-
                         <a class="confirm-text" href="{% url 'delete-projet' projet.slug %}">
                             <img src="{% static 'assets/img/icons/delete.svg' %}" alt="img">
                         </a>

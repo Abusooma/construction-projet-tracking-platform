@@ -30,7 +30,15 @@ def home(request):
 
 
 def all_clients(request):
-    clients = ClientProfile.objects.all()
+    if request.user.is_superuser:
+        clients = ClientProfile.objects.all()
+    elif hasattr(request.user, 'employe_profile'):
+        projets = Projet.objects.filter(constructors=request.user.employe_profile)
+        clients = ClientProfile.objects.filter(projets__in=projets).distinct()
+    elif hasattr(request.user, 'client_profile'):
+        clients = ClientProfile.objects.filter(pk=request.user.client_profile.pk)
+    else:
+        clients = ClientProfile.objects.none()
     return render(request, 'dashboard/liste_clients.html', context={'clients': clients})
 
 
@@ -118,15 +126,35 @@ def addEmploy(request):
     if request.method == 'POST':
         form = EmployeForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Employe ajouté avec success ..!')
+            employe = form.save(commit=False)
+            password_generate = generate_random_password()
+            user = get_user_model().objects.create_user(
+                email=employe.email,
+                nom=employe.nom,
+                prenom=employe.prenom,
+                phone_number=employe.phone_number,
+                address=employe.address,
+                password=password_generate,
+                is_staff=False,
+                is_customer=False
+            )
+            employe.user = user
+            employe.save()
+            # Envoi de l'email personnalisé à l'employé
+            html_message = render_to_string('email/invitation_employe.html', {
+                'user': user,
+                'password': password_generate
+            })
+            subject = 'Vos informations de connexion à la plateforme'
+            send_mail(subject, None, settings.EMAIL_HOST_USER, [user.email], html_message=html_message, fail_silently=True)
+            messages.success(request, 'Employé ajouté avec succès et email envoyé !')
+            del password_generate
             return redirect('list-employ')
         else:
             messages.error(request, 'Quelque chose s\'est mal passé ..!')
             return redirect('add-employ')
     else:
         form = EmployeForm()
-
     return render(request, 'dashboard/addEmploye.html', context={'form': form})
 
 
@@ -158,10 +186,12 @@ def deleteEmploy(request, pk):
 def allProjets(request):
     if request.user.is_superuser:
         all_projets = Projet.objects.all()
-    else:
-        # Filtre les projets par le client associé à l'utilisateur actuel
+    elif hasattr(request.user, 'client_profile'):
         all_projets = Projet.objects.filter(client=request.user.client_profile)
-
+    elif hasattr(request.user, 'employe_profile'):
+        all_projets = Projet.objects.filter(constructors=request.user.employe_profile)
+    else:
+        all_projets = Projet.objects.none()
     return render(request, 'dashboard/projetlist.html', context={'projets': all_projets})
 
 
@@ -206,6 +236,13 @@ def detailProjet(request, slug):
     projet_images = projet.images.all()
     commentaires = Commentaire.objects.filter(owner=request.user, projet=projet)
 
+    # Détermination du droit de modification des tâches
+    can_edit_taches = False
+    if request.user.is_superuser:
+        can_edit_taches = True
+    elif hasattr(request.user, 'employe_profile') and request.user.employe_profile in projet.constructors.all():
+        can_edit_taches = True
+
     if request.method == 'POST':
         form = CommentaireForm(request.POST)
         if form.is_valid():
@@ -226,7 +263,8 @@ def detailProjet(request, slug):
         'taches': taches,
         'form': form,
         'commentaires': commentaires,
-        'number_of_task': number_of_task
+        'number_of_task': number_of_task,
+        'can_edit_taches': can_edit_taches
     }
     return render(request, 'dashboard/projet_detail.html', context=context)
 
@@ -282,6 +320,12 @@ def change_tache_status(request):
     new_status = request.POST.get('statut')
 
     tache = get_object_or_404(Tache, id=tache_id)
+    projet = tache.projet
+    # Sécurité : seul superuser ou employé assigné peut modifier
+    if not request.user.is_superuser:
+        if not (hasattr(request.user, 'employe_profile') and request.user.employe_profile in projet.constructors.all()):
+            return JsonResponse({'success': False, 'error': 'Permission refusée.'}, status=403)
+
     tache.statut = new_status
     tache.save()
 

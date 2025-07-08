@@ -26,6 +26,7 @@ class Employe(models.Model):
         ('3', 'Bijoutier'),
         ('4', 'Stagiaire'),
     ]
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='employe_profile', null=True, blank=True)
     email = models.EmailField(_('email address'))
     nom = models.CharField(max_length=150)
     prenom = models.CharField(max_length=150)

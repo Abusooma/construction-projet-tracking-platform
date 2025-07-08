@@ -45,7 +45,7 @@
                     {% if request.user.photo %}
                         <img src="{{ request.user.photo.url }}" alt="img">
                     {% else %}
-                        <img src="{% static 'assets/img/avatar.svg' %}" alt="img">
+                        <img src="{% static 'assets/img/profiles/profil.png' %}" alt="img">
                     {% endif %}
                     <span class="status online"></span>
                 </span>
@@ -57,7 +57,7 @@
                             {% if request.user.photo %}
                                 <img src="{{ request.user.photo.url }}" alt="img" id="blah">
                             {% else %}
-                                <img src="{% static 'assets/img/avatar.svg' %}" alt="img">
+                                <img src="{% static 'assets/img/profiles/profil.png' %}" alt="img">
                             {% endif %}
                         <span class="status online"></span>
                         </span>

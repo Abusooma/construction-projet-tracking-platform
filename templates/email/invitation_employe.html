@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue sur la plateforme employé</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f7f7f7; }
+        .container { width: 100%; max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        h1 { color: #0056b3; }
+        p { margin: 15px 0; }
+        ul { list-style: none; padding: 0; }
+        ul li { margin: 10px 0; }
+        .btn { display: inline-block; padding: 10px 20px; margin: 20px 0; background-color: #0056b3; color: #fff; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Bienvenue dans l'équipe !</h1>
+    <p>Bonjour {{ user.prenom }} {{ user.nom }},</p>
+    <p>Vous avez été ajouté comme employé sur la plateforme de gestion de projets de construction.</p>
+    <p>Voici vos informations de connexion :</p>
+    <ul>
+        <li><strong>Email :</strong> {{ user.email }}</li>
+        <li><strong>Mot de passe :</strong> {{ password }}</li>
+    </ul>
+    <p>Pour accéder à votre espace et voir les projets auxquels vous êtes assigné, cliquez sur le bouton ci-dessous :</p>
+    <p><a href="{{ login_url|default:'#' }}" class="btn">Se connecter</a></p>
+    <p>Merci de changer votre mot de passe après la première connexion.</p>
+    <p>Cordialement,<br>L'équipe de gestion de projets</p>
+</div>
+</body>
+</html> 

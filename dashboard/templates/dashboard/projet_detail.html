@@ -80,7 +80,7 @@
                     <tr>
                         <th scope="col">Tâche</th>
                         <th scope="col">Statut</th>
-                        {% if request.user.is_superuser %}
+                        {% if can_edit_taches %}
                         <th scope="col">Action</th>
                         {% endif %}
                     </tr>
@@ -100,7 +100,7 @@
                                     {{ tache.get_statut_display }}
                                 </span>
                         </td>
-                        {% if request.user.is_superuser %}
+                        {% if can_edit_taches %}
                         <td>
                             <button class="btn btn-primary btn-sm" style="width:70px;" data-bs-toggle="modal"
                                     data-bs-target="#statusModal" data-tache-id="{{ tache.id }}">Changer
